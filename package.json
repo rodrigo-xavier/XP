@@ -1,11 +1,8 @@
 {
-  "name": "dummy-project",
+  "name": "meu-site",
   "version": "1.0.0",
-  "description": "Projeto mínimo para permitir npm ci",
-  "main": "script.js",
   "scripts": {
-    "build": "echo 'Build dummy'"
+    "build": "mkdir -p public && cp index.html style.css script.js public/"
   },
-  "author": "",
-  "license": "MIT"
+  "dependencies": {}
 }
