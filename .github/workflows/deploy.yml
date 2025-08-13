@@ -35,6 +35,7 @@ jobs:
       
       - name: Generate config.js
         run: |
+          mkdir -p ./public
           echo "const CONFIG = {" > ./public/config.js
           echo "  API_URL: '${{ secrets.API_URL }}'," >> ./public/config.js
           echo "  API_KEY: '${{ secrets.API_KEY }}'," >> ./public/config.js
