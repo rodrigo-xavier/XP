@@ -1,24 +1,52 @@
-name: Deploy GitHub Pages
+name: GitHub Pages
 
 on:
   push:
     branches:
       - main
+  pull_request:
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+  deploy:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    env:
+      API_URL: ${{ secrets.API_URL }}
+      API_KEY: ${{ secrets.API_KEY }}
+      APP_KEY: ${{ secrets.APP_KEY }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Replace secrets in script.js
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      
+      - name: Generate config.js
         run: |
-          sed -i "s|API_URL|${{ secrets.API_URL }}|g" script.js
-          sed -i "s|API_KEY|${{ secrets.API_KEY }}|g" script.js
-          sed -i "s|APP_KEY|${{ secrets.APP_KEY }}|g" script.js
+          echo "const CONFIG = {" > ./public/config.js
+          echo "  API_URL: '${{ secrets.API_URL }}'," >> ./public/config.js
+          echo "  API_KEY: '${{ secrets.API_KEY }}'," >> ./public/config.js
+          echo "  APP_KEY: '${{ secrets.APP_KEY }}'" >> ./public/config.js
+          echo "};" >> ./public/config.js
 
-      - name: Deploy to GitHub Pages
+      - run: npm ci
+      - run: npm run build
+
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
+        if: github.ref == 'refs/heads/main'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
