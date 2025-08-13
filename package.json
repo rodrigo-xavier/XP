@@ -2,7 +2,7 @@
   "name": "dummy-project",
   "version": "1.0.0",
   "description": "Projeto mínimo para permitir npm ci",
-  "main": "index.js",
+  "main": "script.js",
   "scripts": {
     "build": "echo 'Build dummy'"
   },
