@@ -36,6 +36,9 @@ jobs:
 
       - name: Build
         run: |
+          mkdir -p public
+          cp index.html style.css script.js public/
+          cp public/config.js public/
           npm install
           npm run build
 

@@ -2,6 +2,9 @@
 const apiUrl = window.API_URL;
 const apiKey = window.API_KEY;
 const appKey = window.APP_KEY;
+const apiUrl_env = process.env.API_URL;
+const apiKey_env = process.env.MY_SECRET;
+const appKey_env = process.env.MY_SECRET;
 
 const defaultShopItems = {
     "Hobby": [
