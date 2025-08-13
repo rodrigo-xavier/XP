@@ -20,12 +20,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24'
-
-      - name: Build
+      
+      - name: Inject Secrets
         run: |
+          echo "window.API_URL='${{ secrets.API_URL }}';" > ./config.js
+          echo "window.API_KEY='${{ secrets.API_KEY }}';" > ./config.js
+          echo "window.APP_KEY='${{ secrets.APP_KEY }}';" > ./config.js
           export API_URL=${{ secrets.API_URL }}
           export API_KEY=${{ secrets.API_KEY }}
           export APP_KEY=${{ secrets.APP_KEY }}
+
+      - name: Build
+        run: |
           npm install
           npm run build
 
