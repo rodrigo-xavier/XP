@@ -13,10 +13,6 @@ jobs:
       contents: write
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
-    env:
-      API_URL: ${{ secrets.API_URL }}
-      API_KEY: ${{ secrets.API_KEY }}
-      APP_KEY: ${{ secrets.APP_KEY }}
     steps:
       - uses: actions/checkout@v4
 
@@ -25,35 +21,17 @@ jobs:
         with:
           node-version: '24'
 
-      - name: Cache dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-      
-      - name: Generate config.js
+      - name: Build
         run: |
-          mkdir -p ./public
-          echo "const CONFIG = {" > ./public/config.js
-          echo "  API_URL: '${{ secrets.API_URL }}'," >> ./public/config.js
-          echo "  API_KEY: '${{ secrets.API_KEY }}'," >> ./public/config.js
-          echo "  APP_KEY: '${{ secrets.APP_KEY }}'" >> ./public/config.js
-          echo "};" >> ./public/config.js
-      
-      - name: Copy static files
-        run: |
-          cp index.html ./public/
-          cp style.css ./public/
-          cp script.js ./public/
-
-      - run: npm install
-      - run: npm run build
+          export API_URL=${{ secrets.API_URL }}
+          export API_KEY=${{ secrets.API_KEY }}
+          export APP_KEY=${{ secrets.APP_KEY }}
+          npm install
+          npm run build
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
         if: github.ref == 'refs/heads/main'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+          publish_dir: ./

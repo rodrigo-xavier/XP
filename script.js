@@ -1,7 +1,7 @@
 // --- CONFIG & DATA ---
-const apiUrl = CONFIG.API_URL;
-const apiKey = CONFIG.API_KEY;
-const appKey = CONFIG.APP_KEY;
+const apiUrl = process.env.API_URL;
+const apiKey = process.env.API_KEY;
+const appKey = process.env.APP_KEY;
 
 const defaultShopItems = {
     "Hobby": [
