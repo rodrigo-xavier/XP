@@ -1,10 +1,7 @@
 // --- CONFIG & DATA ---
-const apiUrl = window.API_URL;
-const apiKey = window.API_KEY;
-const appKey = window.APP_KEY;
-const apiUrl_env = process.env.API_URL;
-const apiKey_env = process.env.MY_SECRET;
-const appKey_env = process.env.MY_SECRET;
+const apiUrl = import.meta.env["API_URL"];
+const apiKey = import.meta.env["API_KEY"];
+const appKey = import.meta.env["APP_KEY"];
 
 const defaultShopItems = {
     "Hobby": [
@@ -27,11 +24,13 @@ const defaultShopItems = {
 };
 
 let shopItemsData = {};
-let xpHistory = [];
 let xpBalance = 0;
 let totalXpAcquired = 0;
 
 // --- DOM ELEMENTS ---
+const [xpHistory, setXpHistory] = useState([]);
+const [shopItems, setShopItems] = useState(defaultShopItems);
+
 const passwordOverlay = document.getElementById('password-overlay');
 const passwordForm = document.getElementById('password-form');
 const passwordInput = document.getElementById('password-input');
