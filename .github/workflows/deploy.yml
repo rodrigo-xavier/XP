@@ -23,9 +23,13 @@ jobs:
       
       - name: Inject Secrets
         run: |
-          echo "window.API_URL='${{ secrets.API_URL }}';" > ./config.js
-          echo "window.API_KEY='${{ secrets.API_KEY }}';" > ./config.js
-          echo "window.APP_KEY='${{ secrets.APP_KEY }}';" > ./config.js
+          mkdir -p public
+          cat <<EOF > public/config.js
+          window.API_URL='${{ secrets.API_URL }}';
+          window.API_KEY='${{ secrets.API_KEY }}';
+          window.APP_KEY='${{ secrets.APP_KEY }}';
+          EOF
+
           export API_URL=${{ secrets.API_URL }}
           export API_KEY=${{ secrets.API_KEY }}
           export APP_KEY=${{ secrets.APP_KEY }}
