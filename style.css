@@ -1,0 +1,344 @@
+:root {
+    --bg-color: #121212;
+    --surface-color: #1e1e1e;
+    --primary-color: #bb86fc;
+    --secondary-color: #03dac6;
+    --text-color: #e0e0e0;
+    --border-color: #333;
+    --xp-earn-color: #4caf50;
+    --xp-spend-color: #f44336;
+    --error-color: #cf6679;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Roboto Mono', monospace;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+#app {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+header {
+    text-align: center;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 1rem;
+}
+
+header h1 {
+    font-family: 'VT323', monospace;
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.total-xp-container h2 {
+    font-size: 1.8rem;
+    color: var(--secondary-color);
+    margin: 0.25rem 0;
+}
+
+.total-xp-container h2:last-child {
+    color: var(--primary-color);
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+h3 {
+    font-family: 'VT323', monospace;
+    font-size: 2rem;
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+    margin-top: 0;
+}
+
+#xp-adder {
+    background-color: var(--surface-color);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+#add-xp-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+#add-xp-form input {
+    flex: 1 1 200px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 0.75rem;
+    border-radius: 4px;
+    font-family: 'Roboto Mono', monospace;
+}
+
+#add-xp-form input:focus {
+    outline: 2px solid var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+button, .buy-btn {
+    background-color: var(--primary-color);
+    color: #000;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    text-transform: uppercase;
+}
+
+button:hover, .buy-btn:hover {
+    background-color: var(--secondary-color);
+}
+
+button:disabled, .buy-btn:disabled {
+    background-color: #555;
+    color: #888;
+    cursor: not-allowed;
+}
+
+.columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+#shop, #xp-history {
+    background-color: var(--surface-color);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+}
+
+#add-item-container {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+#add-item-container h4 {
+    color: var(--secondary-color);
+    font-size: 1.5rem;
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+#add-item-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+#add-item-form input {
+    flex: 1 1 150px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 0.75rem;
+    border-radius: 4px;
+    font-family: 'Roboto Mono', monospace;
+}
+
+#add-item-form input:focus {
+    outline: 2px solid var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+#add-item-form button {
+    flex-basis: 100%;
+}
+
+.shop-category h4 {
+    color: var(--secondary-color);
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.shop-category:first-child h4 {
+    margin-top: 0;
+}
+
+.shop-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    background-color: #2a2a2a;
+    gap: 0.5rem;
+}
+
+.shop-item-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.shop-item-name {
+    font-weight: 700;
+}
+
+.shop-item-cost {
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+    font-weight: 700;
+}
+
+.shop-item-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.delete-btn {
+    background-color: var(--xp-spend-color);
+    color: var(--text-color);
+    padding: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 1;
+    height: fit-content;
+}
+
+.delete-btn:hover {
+    filter: brightness(1.2);
+    background-color: var(--xp-spend-color); /* override general hover */
+}
+
+#history-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+#history-list li {
+    background-color: #2a2a2a;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 4px solid;
+}
+
+#history-list .earn {
+    border-left-color: var(--xp-earn-color);
+}
+
+#history-list .spend {
+    border-left-color: var(--xp-spend-color);
+}
+
+.history-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.history-description {
+    font-weight: bold;
+}
+
+.history-date {
+    font-size: 0.8em;
+    color: #aaa;
+}
+
+.history-amount {
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.history-amount.earn {
+    color: var(--xp-earn-color);
+}
+
+.history-amount.spend {
+    color: var(--xp-spend-color);
+}
+
+.locked {
+    display: none !important;
+}
+
+#password-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+#password-modal {
+    background-color: var(--surface-color);
+    padding: 2rem 3rem;
+    border-radius: 8px;
+    border: 1px solid var(--primary-color);
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
+
+#password-modal h3 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+}
+
+#password-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+#password-input {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 0.75rem;
+    border-radius: 4px;
+    font-family: 'Roboto Mono', monospace;
+    text-align: center;
+}
+
+#password-input:focus {
+    outline: 2px solid var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+#password-error {
+    color: var(--error-color);
+    margin-top: 1rem;
+    margin-bottom: 0;
+    font-size: 0.9rem;
+    font-weight: bold;
+    visibility: hidden; /* Hide by default */
+}
