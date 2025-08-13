@@ -1,5 +1,7 @@
 // --- CONFIG & DATA ---
-const xpassword = '1234'; // Your secret password
+const apiUrl = "API_URL";
+const apiKey = "API_KEY";
+const appKey = "APP_KEY";
 
 const defaultShopItems = {
     "Hobby": [
@@ -46,26 +48,45 @@ const importDataBtn = document.getElementById('import-data-btn');
 const importFileInput = document.getElementById('import-file-input');
 
 // --- LOCAL STORAGE ---
-const loadData = () => {
-    const savedXpHistory = localStorage.getItem('xpHistory');
-    if (savedXpHistory) {
-        xpHistory = JSON.parse(savedXpHistory);
-    }
+// Carregar dados da API
+const loadData = async () => {
+    try {
+        const response = await fetch(`${apiUrl}`, {
+            method: 'GET',
+            headers: {
+                'X-ACCESS-KEY': apiKey
+            },
+        });
 
-    const savedShopItems = localStorage.getItem('shopItems');
-    if (savedShopItems) {
-        shopItemsData = JSON.parse(savedShopItems);
-    } else {
-        shopItemsData = JSON.parse(JSON.stringify(defaultShopItems)); // Deep copy
+        if (!response.ok) throw new Error('Erro ao carregar dados da API');
+
+        const data = await response.json();
+
+        xpHistory = data.xpHistory || [];
+        shopItemsData = data.shopItems || JSON.parse(JSON.stringify(defaultShopItems));
+    } catch (error) {
+        console.error('Erro ao carregar dados:', error);
+        shopItemsData = JSON.parse(JSON.stringify(defaultShopItems)); // fallback
     }
 };
 
-const saveXpHistory = () => {
-    localStorage.setItem('xpHistory', JSON.stringify(xpHistory));
-};
-
-const saveShopItems = () => {
-    localStorage.setItem('shopItems', JSON.stringify(shopItemsData));
+// Salvar XP na API
+const saveXpHistory = async () => {
+    try {
+        await fetch(`${apiUrl}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-ACCESS-KEY': apiKey
+            },
+            body: JSON.stringify({
+                xpHistory,
+                shopItems: shopItemsData
+            })
+        });
+    } catch (error) {
+        console.error('Erro ao salvar XP:', error);
+    }
 };
 
 // --- RENDER FUNCTIONS ---
@@ -254,7 +275,7 @@ const handleAddItem = (e) => {
 // --- PASSWORD PROTECTION ---
 const handlePasswordSubmit = (e) => {
     e.preventDefault();
-    if (passwordInput.value === xpassword) {
+    if (passwordInput.value === appKey) {
         passwordOverlay.style.display = 'none';
         lockedContent.forEach(el => el.classList.remove('locked'));
     } else {
