@@ -34,10 +34,10 @@ jobs:
           export API_KEY=${{ secrets.API_KEY }}
           export APP_KEY=${{ secrets.APP_KEY }}
 
+          cp index.html style.css script.js public/
+          
       - name: Build
         run: |
-          mkdir -p public
-          cp index.html style.css script.js public/
           npm install
           npm run build
 
