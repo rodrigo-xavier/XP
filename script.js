@@ -241,7 +241,7 @@ const handleDeleteItem = (itemId, category) => {
         delete shopItemsData[category];
     }
 
-    saveShopItems();
+    saveXpHistory();
     updateUI();
 };
 
@@ -267,7 +267,7 @@ const handleAddItem = (e) => {
     };
 
     shopItemsData[category].push(newItem);
-    saveShopItems();
+    saveXpHistory();
     updateUI();
     addItemForm.reset();
 };
@@ -329,7 +329,6 @@ const importData = (e) => {
                     xpHistory = importedData.xpHistory;
                     shopItemsData = importedData.shopItems;
                     saveXpHistory();
-                    saveShopItems();
                     updateUI();
                 }
             } else {
