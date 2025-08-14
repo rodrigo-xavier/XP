@@ -48,7 +48,6 @@ const importDataBtn = document.getElementById('import-data-btn');
 const importFileInput = document.getElementById('import-file-input');
 
 // --- LOCAL STORAGE ---
-// Carregar dados da API
 const loadData = async () => {
     try {
         const response = await fetch(`${API_URL}`, {
@@ -70,7 +69,6 @@ const loadData = async () => {
     }
 };
 
-// Salvar XP na API
 const updateXpHistory = async () => {
     try {
         await fetch(`${API_URL}`, {
@@ -81,6 +79,22 @@ const updateXpHistory = async () => {
             },
             body: JSON.stringify({
                 xpHistory,
+            })
+        });
+    } catch (error) {
+        console.error('Erro ao salvar XP:', error);
+    }
+};
+
+const updateShopItems = async () => {
+    try {
+        await fetch(`${API_URL}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-ACCESS-KEY': API_KEY
+            },
+            body: JSON.stringify({
                 shopItems: shopItemsData
             })
         });
@@ -241,7 +255,7 @@ const handleDeleteItem = (itemId, category) => {
         delete shopItemsData[category];
     }
 
-    await updateXpHistory();
+    await updateShopItems();
     updateUI();
 };
 
@@ -267,7 +281,7 @@ const handleAddItem = (e) => {
     };
 
     shopItemsData[category].push(newItem);
-    await updateXpHistory();
+    await updateShopItems();
     updateUI();
     addItemForm.reset();
 };
@@ -329,6 +343,7 @@ const importData = (e) => {
                     xpHistory = importedData.xpHistory;
                     shopItemsData = importedData.shopItems;
                     await updateXpHistory();
+                    await updateShopItems();
                     updateUI();
                 }
             } else {
