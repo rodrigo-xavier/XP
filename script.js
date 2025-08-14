@@ -93,32 +93,6 @@ const renderXpValues = async () => {
     totalXpBalanceEl.textContent = xpBalance;
 };
 
-const renderHistory = async () => {
-    historyList.innerHTML = '';
-    if (xpHistory.length === 0) {
-        historyList.innerHTML = '<li>No XP history yet. Go earn some!</li>';
-        return;
-    }
-
-    [...xpHistory].reverse().forEach(entry => {
-        const li = document.createElement('li');
-        const type = entry.amount > 0 ? 'earn' : 'spend';
-        li.className = type;
-
-        const date = new Date(entry.date).toLocaleString();
-        li.innerHTML = `
-            <div class="history-details">
-                <span class="history-description">${entry.description}</span>
-                <span class="history-date">${date}</span>
-            </div>
-            <span class="history-amount ${type}">
-                ${entry.amount > 0 ? '+' : ''}${entry.amount} XP
-            </span>
-        `;
-        historyList.appendChild(li);
-    });
-};
-
 const renderShop = async () => {
     shopItemsContainer.innerHTML = '';
     const sortedCategories = Object.keys(shopItemsData).sort();
@@ -132,15 +106,18 @@ const renderShop = async () => {
         const categoryHeader = document.createElement('div');
         categoryHeader.className = 'shop-category-header';
         categoryHeader.style.cursor = 'pointer';
+        categoryHeader.style.display = 'flex';
+        categoryHeader.style.alignItems = 'center';
+        categoryHeader.style.gap = '8px'; // espaço entre seta e nome
 
         // Setinha inicial (fechada)
         const arrow = document.createElement('span');
         arrow.className = 'category-arrow';
         arrow.textContent = '►'; // fechada
-        arrow.style.marginRight = '8px';
 
-        const title = document.createElement('h4');
+        const title = document.createElement('span');
         title.textContent = category;
+        title.style.fontWeight = 'bold';
 
         categoryHeader.appendChild(arrow);
         categoryHeader.appendChild(title);
@@ -179,8 +156,6 @@ const renderShop = async () => {
         });
     }
 };
-
-
 
 const updateUI = async () => {
     await calculateXpValues();
