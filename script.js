@@ -2,9 +2,9 @@
 const apiUrl = API_URL
 const apiKey = API_KEY
 const appKey = APP_KEY
-const apiUrl = import.meta.env["API_URL"];
-const apiKey = import.meta.env["API_KEY"];
-const appKey = import.meta.env["APP_KEY"];
+const apiUrl_test = import.meta.env["API_URL"];
+const apiKey_test = import.meta.env["API_KEY"];
+const appKey_test = import.meta.env["APP_KEY"];
 
 const defaultShopItems = {
     "Hobby": [
