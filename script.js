@@ -131,7 +131,19 @@ const renderShop = async () => {
 
         const categoryHeader = document.createElement('div');
         categoryHeader.className = 'shop-category-header';
-        categoryHeader.innerHTML = `<h4>${category}</h4> <button class="toggle-category">Toggle</button>`;
+        categoryHeader.style.cursor = 'pointer';
+
+        // Setinha inicial (fechada)
+        const arrow = document.createElement('span');
+        arrow.className = 'category-arrow';
+        arrow.textContent = '►'; // fechada
+        arrow.style.marginRight = '8px';
+
+        const title = document.createElement('h4');
+        title.textContent = category;
+
+        categoryHeader.appendChild(arrow);
+        categoryHeader.appendChild(title);
         categoryDiv.appendChild(categoryHeader);
 
         const itemsContainer = document.createElement('div');
@@ -156,15 +168,18 @@ const renderShop = async () => {
         categoryDiv.appendChild(itemsContainer);
         shopItemsContainer.appendChild(categoryDiv);
 
-        const toggleBtn = categoryHeader.querySelector('.toggle-category');
-        toggleBtn.addEventListener('click', () => {
-            itemsContainer.style.display = itemsContainer.style.display === 'none' ? 'block' : 'none';
-        });
-
-        // Inicialmente, você pode deixar as categorias recolhidas
+        // Inicialmente, categorias recolhidas
         itemsContainer.style.display = 'none';
+
+        // Toggle ao clicar no header
+        categoryHeader.addEventListener('click', () => {
+            const isHidden = itemsContainer.style.display === 'none';
+            itemsContainer.style.display = isHidden ? 'block' : 'none';
+            arrow.textContent = isHidden ? '▼' : '►';
+        });
     }
 };
+
 
 
 const updateUI = async () => {
