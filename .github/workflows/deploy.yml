@@ -1,64 +1,57 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
-
+name: Deploy static web app
 on:
-  # Runs on pushes targeting the default branch
   push:
-    branches: ['main']
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# Sets the GITHUB_TOKEN permissions to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Allow one concurrent deployment
-concurrency:
-  group: 'pages'
-  cancel-in-progress: true
-
-#Allow repo secrets
-env:
-  API_URL: ${{ secrets.API_URL }}
-  API_KEY: ${{ secrets.API_KEY }}
-  APP_KEY: ${{ secrets.APP_KEY }}
+    branches:
+      - main # Triggers the action on push to the 'main' branch
+    # tags:
+    #   - v*.*.* # Triggers the action on tag
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
+    name: Deploy
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      # Step 1: Checkout the latest code
+      - name: Checkout code
         uses: actions/checkout@v4
 
+      # Step 2: Set up Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24" # Specify your Node.js version
+      
+      # Step 3: Get tag version
+      - name: Get tag version
+        id: get_tag
+        run: echo "TAG_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      # Step 4: Load environment variables from file (.env)
+      - name: Set environment variables from Dotenv
+        uses: c-py/action-dotenv-to-setenv@v5
+        with:
+          env-file: .env
+
+      # Step 5: Load environment variables from GitHub Secrets
+      - name: Set environment variables from GitHub Secrets
+        run: |
+          echo "API_URL=${{ secrets.API_URL }}" >> $GITHUB_ENV
+          echo "API_KEY=${{ secrets.API_KEY }}" >> $GITHUB_ENV
+          echo "APP_KEY=${{ secrets.APP_KEY }}" >> $GITHUB_ENV
+
+      # Step 6: Install dependencies
       - name: Install dependencies
         run: npm install
 
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-
-      - name: Clean previous build
-        run: rm -rf ./dist
-
+      # Step 7: Run build script
       - name: Build
-        run: npm run build
+        run: npm run build # Assumes there's a build script in package.json
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      # Step 8: Deploy
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v4
+        if: github.ref == 'refs/heads/main'
         with:
-          path: './dist'
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist

@@ -24,13 +24,11 @@ const defaultShopItems = {
 };
 
 let shopItemsData = {};
+let xpHistory = [];
 let xpBalance = 0;
 let totalXpAcquired = 0;
 
 // --- DOM ELEMENTS ---
-const [xpHistory, setXpHistory] = useState([]);
-const [shopItems, setShopItems] = useState(defaultShopItems);
-
 const passwordOverlay = document.getElementById('password-overlay');
 const passwordForm = document.getElementById('password-form');
 const passwordInput = document.getElementById('password-input');
