@@ -334,30 +334,27 @@ const importData = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-        try {
-            const importedData = JSON.parse(event.target.result);
-            if (importedData.xpHistory && importedData.shopItems) {
-                if (confirm('This will overwrite your current data. Are you sure?')) {
-                    xpHistory = importedData.xpHistory;
-                    shopItemsData = importedData.shopItems;
-                    await updateXpHistory();
-                    await updateShopItems();
-                    updateUI();
-                }
-            } else {
-                alert('Invalid data file. Make sure it contains xpHistory and shopItems.');
+    try {
+        const text = await file.text(); // FileReader usando promise
+        const importedData = JSON.parse(text);
+
+        if (importedData.xpHistory && importedData.shopItems) {
+            if (confirm('This will overwrite your current data. Are you sure?')) {
+                xpHistory = importedData.xpHistory;
+                shopItemsData = importedData.shopItems;
+                await updateXpHistory();
+                await updateShopItems();
+                updateUI();
             }
-        } catch (error) {
-            alert('Error reading file. Make sure it is a valid JSON file.');
-            console.error("Import error:", error);
-        } finally {
-            // Reset file input to allow importing the same file again
-            importFileInput.value = '';
+        } else {
+            alert('Invalid data file. Make sure it contains xpHistory and shopItems.');
         }
-    };
-    reader.readAsText(file);
+    } catch (error) {
+        alert('Error reading file. Make sure it is a valid JSON file.');
+        console.error("Import error:", error);
+    } finally {
+        importFileInput.value = '';
+    }
 };
 
 // --- INITIALIZATION ---
@@ -366,17 +363,9 @@ const init = async () => {
         await loadData(); // Espera os dados carregarem antes de atualizar a UI
         updateUI();
 
-        addXpForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            await handleAddXp(e);
-        });
-
+        addXpForm.addEventListener('submit', handleAddXp);
         shopItemsContainer.addEventListener('click', handleShopAction);
-
-        addItemForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            await handleAddItem(e);
-        });
+        addItemForm.addEventListener('submit', handleAddItem);
 
         exportDataBtn.addEventListener('click', exportData);
         importDataBtn.addEventListener('click', () => importFileInput.click());
