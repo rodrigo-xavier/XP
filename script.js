@@ -83,7 +83,7 @@ const updateShopItems = async () => {
         await fetch(`${API_URL}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json', 'X-ACCESS-KEY': API_KEY },
-            body: JSON.stringify({ shopItems: shopItemsData })
+            body: JSON.stringify({ shopItems: shopItemsData, xpHistory })
         });
     } catch (error) {
         console.error('Erro ao salvar shop items:', error);
