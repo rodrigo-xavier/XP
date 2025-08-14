@@ -52,20 +52,17 @@ const loadData = async () => {
     try {
         const response = await fetch(`${API_URL}`, {
             method: 'GET',
-            headers: {
-                'X-ACCESS-KEY': API_KEY
-            },
+            headers: { 'X-ACCESS-KEY': API_KEY },
         });
 
         if (!response.ok) throw new Error('Erro ao carregar dados da API');
 
         const data = await response.json();
-
-        xpHistory = (data.record?.xpHistory) || [];
-        shopItemsData = (data.record?.shopItems) || JSON.parse(JSON.stringify(defaultShopItems));
+        xpHistory = data.record?.xpHistory || [];
+        shopItemsData = data.record?.shopItems || JSON.parse(JSON.stringify(defaultShopItems));
     } catch (error) {
         console.error('Erro ao carregar dados:', error);
-        shopItemsData = JSON.parse(JSON.stringify(defaultShopItems)); // fallback
+        shopItemsData = JSON.parse(JSON.stringify(defaultShopItems));
     }
 };
 
@@ -73,13 +70,8 @@ const updateXpHistory = async () => {
     try {
         await fetch(`${API_URL}`, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-ACCESS-KEY': API_KEY
-            },
-            body: JSON.stringify({
-                xpHistory,
-            })
+            headers: { 'Content-Type': 'application/json', 'X-ACCESS-KEY': API_KEY },
+            body: JSON.stringify({ xpHistory })
         });
     } catch (error) {
         console.error('Erro ao salvar XP:', error);
@@ -90,46 +82,40 @@ const updateShopItems = async () => {
     try {
         await fetch(`${API_URL}`, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-ACCESS-KEY': API_KEY
-            },
-            body: JSON.stringify({
-                shopItems: shopItemsData
-            })
+            headers: { 'Content-Type': 'application/json', 'X-ACCESS-KEY': API_KEY },
+            body: JSON.stringify({ shopItems: shopItemsData })
         });
     } catch (error) {
-        console.error('Erro ao salvar XP:', error);
+        console.error('Erro ao salvar shop items:', error);
     }
 };
 
 // --- RENDER FUNCTIONS ---
-const calculateXpValues = () => {
+const calculateXpValues = async () => {
     xpBalance = xpHistory.reduce((sum, entry) => sum + entry.amount, 0);
     totalXpAcquired = xpHistory
         .filter(entry => entry.amount > 0)
         .reduce((sum, entry) => sum + entry.amount, 0);
 };
 
-const renderXpValues = () => {
+const renderXpValues = async () => {
     totalXpAcquiredEl.textContent = totalXpAcquired;
     totalXpBalanceEl.textContent = xpBalance;
 };
 
-const renderHistory = () => {
+const renderHistory = async () => {
     historyList.innerHTML = '';
     if (xpHistory.length === 0) {
         historyList.innerHTML = '<li>No XP history yet. Go earn some!</li>';
         return;
     }
-    
+
     [...xpHistory].reverse().forEach(entry => {
         const li = document.createElement('li');
         const type = entry.amount > 0 ? 'earn' : 'spend';
         li.className = type;
 
         const date = new Date(entry.date).toLocaleString();
-        
         li.innerHTML = `
             <div class="history-details">
                 <span class="history-description">${entry.description}</span>
@@ -143,7 +129,7 @@ const renderHistory = () => {
     });
 };
 
-const renderShop = () => {
+const renderShop = async () => {
     shopItemsContainer.innerHTML = '';
     const sortedCategories = Object.keys(shopItemsData).sort();
 
@@ -176,11 +162,11 @@ const renderShop = () => {
     }
 };
 
-const updateUI = () => {
-    calculateXpValues();
-    renderXpValues();
-    renderHistory();
-    renderShop(); // Re-render shop to update button states
+const updateUI = async () => {
+    await calculateXpValues();
+    await renderXpValues();
+    await renderHistory();
+    await renderShop();
 };
 
 // --- EVENT HANDLERS ---
@@ -194,52 +180,38 @@ const handleAddXp = async (e) => {
         return;
     }
 
-    xpHistory.push({
-        amount,
-        description,
-        date: new Date().toISOString()
-    });
-    
+    xpHistory.push({ amount, description, date: new Date().toISOString() });
     await updateXpHistory();
-    updateUI();
-
+    await updateUI();
     addXpForm.reset();
 };
 
-const handleShopAction = (e) => {
+const handleShopAction = async (e) => {
     const target = e.target;
     const itemId = target.dataset.itemId;
     if (!itemId) return;
 
     if (target.classList.contains('buy-btn')) {
-        handleBuyItem(itemId);
+        await handleBuyItem(itemId);
     } else if (target.classList.contains('delete-btn')) {
         const category = target.dataset.category;
-        handleDeleteItem(itemId, category);
+        await handleDeleteItem(itemId, category);
     }
 };
 
 const handleBuyItem = async (itemId) => {
     let item;
-    
     for (const category in shopItemsData) {
         const found = shopItemsData[category].find(i => i.id === itemId);
-        if (found) {
-            item = found;
-            break;
-        }
+        if (found) { item = found; break; }
     }
 
     if (!item) return;
 
     if (xpBalance >= item.cost) {
-        xpHistory.push({
-            amount: -item.cost,
-            description: `Bought: ${item.name}`,
-            date: new Date().toISOString()
-        });
+        xpHistory.push({ amount: -item.cost, description: `Bought: ${item.name}`, date: new Date().toISOString() });
         await updateXpHistory();
-        updateUI();
+        await updateUI();
     } else {
         alert("Not enough XP!");
     }
@@ -247,16 +219,10 @@ const handleBuyItem = async (itemId) => {
 
 const handleDeleteItem = async (itemId, category) => {
     if (!shopItemsData[category]) return;
-
     shopItemsData[category] = shopItemsData[category].filter(item => item.id !== itemId);
-    
-    // Optional: remove category if it becomes empty
-    if (shopItemsData[category].length === 0) {
-        delete shopItemsData[category];
-    }
-
+    if (shopItemsData[category].length === 0) delete shopItemsData[category];
     await updateShopItems();
-    updateUI();
+    await updateUI();
 };
 
 const handleAddItem = async (e) => {
@@ -270,24 +236,16 @@ const handleAddItem = async (e) => {
         return;
     }
 
-    if (!shopItemsData[category]) {
-        shopItemsData[category] = [];
-    }
+    if (!shopItemsData[category]) shopItemsData[category] = [];
 
-    const newItem = {
-        id: crypto.randomUUID(),
-        name,
-        cost,
-    };
-
-    shopItemsData[category].push(newItem);
+    shopItemsData[category].push({ id: crypto.randomUUID(), name, cost });
     await updateShopItems();
-    updateUI();
+    await updateUI();
     addItemForm.reset();
 };
 
 // --- PASSWORD PROTECTION ---
-const handlePasswordSubmit = (e) => {
+const handlePasswordSubmit = async (e) => {
     e.preventDefault();
     if (passwordInput.value === APP_KEY) {
         passwordOverlay.style.display = 'none';
@@ -296,7 +254,6 @@ const handlePasswordSubmit = (e) => {
         passwordError.style.visibility = 'visible';
         passwordInput.value = '';
         passwordInput.focus();
-        // Vibrate and shake for feedback
         if (window.navigator.vibrate) window.navigator.vibrate(200);
         passwordForm.animate([
             { transform: 'translateX(0)' },
@@ -305,21 +262,14 @@ const handlePasswordSubmit = (e) => {
             { transform: 'translateX(-10px)' },
             { transform: 'translateX(10px)' },
             { transform: 'translateX(0)' }
-        ], {
-            duration: 300,
-            iterations: 1
-        });
+        ], { duration: 300, iterations: 1 });
     }
 };
 
 // --- DATA MANAGEMENT ---
-const exportData = () => {
-    const dataToExport = {
-        xpHistory,
-        shopItems: shopItemsData
-    };
-    const dataStr = JSON.stringify(dataToExport, null, 2);
-    const blob = new Blob([dataStr], { type: 'application/json' });
+const exportData = async () => {
+    const dataToExport = { xpHistory, shopItems: shopItemsData };
+    const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -335,7 +285,7 @@ const importData = async (e) => {
     if (!file) return;
 
     try {
-        const text = await file.text(); // FileReader usando promise
+        const text = await file.text();
         const importedData = JSON.parse(text);
 
         if (importedData.xpHistory && importedData.shopItems) {
@@ -344,11 +294,9 @@ const importData = async (e) => {
                 shopItemsData = importedData.shopItems;
                 await updateXpHistory();
                 await updateShopItems();
-                updateUI();
+                await updateUI();
             }
-        } else {
-            alert('Invalid data file. Make sure it contains xpHistory and shopItems.');
-        }
+        } else alert('Invalid data file. Must contain xpHistory and shopItems.');
     } catch (error) {
         alert('Error reading file. Make sure it is a valid JSON file.');
         console.error("Import error:", error);
@@ -360,22 +308,19 @@ const importData = async (e) => {
 // --- INITIALIZATION ---
 const init = async () => {
     try {
-        await loadData(); // Espera os dados carregarem antes de atualizar a UI
-        updateUI();
+        await loadData();
+        await updateUI();
 
-        addXpForm.addEventListener('submit', handleAddXp);
-        shopItemsContainer.addEventListener('click', handleShopAction);
-        addItemForm.addEventListener('submit', handleAddItem);
-
-        exportDataBtn.addEventListener('click', exportData);
+        addXpForm.addEventListener('submit', async (e) => await handleAddXp(e));
+        shopItemsContainer.addEventListener('click', async (e) => await handleShopAction(e));
+        addItemForm.addEventListener('submit', async (e) => await handleAddItem(e));
+        exportDataBtn.addEventListener('click', async () => await exportData());
         importDataBtn.addEventListener('click', () => importFileInput.click());
-        importFileInput.addEventListener('change', importData);
-        passwordForm.addEventListener('submit', handlePasswordSubmit);
-
+        importFileInput.addEventListener('change', async (e) => await importData(e));
+        passwordForm.addEventListener('submit', async (e) => await handlePasswordSubmit(e));
     } catch (error) {
         console.error('Erro na inicialização:', error);
     }
 };
-
 
 init();
