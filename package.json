@@ -1,0 +1,11 @@
+{
+  "name": "xp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/script.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {}
+}
