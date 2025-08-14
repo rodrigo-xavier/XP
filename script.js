@@ -184,7 +184,7 @@ const updateUI = () => {
 };
 
 // --- EVENT HANDLERS ---
-const handleAddXp = (e) => {
+const handleAddXp = async (e) => {
     e.preventDefault();
     const amount = parseInt(xpAmountInput.value);
     const description = xpDescriptionInput.value.trim();
@@ -219,7 +219,7 @@ const handleShopAction = (e) => {
     }
 };
 
-const handleBuyItem = (itemId) => {
+const handleBuyItem = async (itemId) => {
     let item;
     
     for (const category in shopItemsData) {
@@ -245,7 +245,7 @@ const handleBuyItem = (itemId) => {
     }
 };
 
-const handleDeleteItem = (itemId, category) => {
+const handleDeleteItem = async (itemId, category) => {
     if (!shopItemsData[category]) return;
 
     shopItemsData[category] = shopItemsData[category].filter(item => item.id !== itemId);
@@ -259,7 +259,7 @@ const handleDeleteItem = (itemId, category) => {
     updateUI();
 };
 
-const handleAddItem = (e) => {
+const handleAddItem = async (e) => {
     e.preventDefault();
     const name = e.target.elements['item-name'].value.trim();
     const cost = parseInt(e.target.elements['item-cost'].value);
@@ -330,7 +330,7 @@ const exportData = () => {
     URL.revokeObjectURL(url);
 };
 
-const importData = (e) => {
+const importData = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -361,19 +361,32 @@ const importData = (e) => {
 };
 
 // --- INITIALIZATION ---
-const init = () => {
-    loadData().then(() => {
+const init = async () => {
+    try {
+        await loadData(); // Espera os dados carregarem antes de atualizar a UI
         updateUI();
 
-        addXpForm.addEventListener('submit', handleAddXp);
+        addXpForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await handleAddXp(e);
+        });
+
         shopItemsContainer.addEventListener('click', handleShopAction);
-        addItemForm.addEventListener('submit', handleAddItem);
+
+        addItemForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await handleAddItem(e);
+        });
+
         exportDataBtn.addEventListener('click', exportData);
         importDataBtn.addEventListener('click', () => importFileInput.click());
         importFileInput.addEventListener('change', importData);
-
         passwordForm.addEventListener('submit', handlePasswordSubmit);
-    });
+
+    } catch (error) {
+        console.error('Erro na inicialização:', error);
+    }
 };
+
 
 init();
