@@ -66,27 +66,18 @@ const loadData = async () => {
     }
 };
 
-const updateXpHistory = async () => {
+const saveData = async () => {
     try {
         await fetch(`${API_URL}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json', 'X-ACCESS-KEY': API_KEY },
-            body: JSON.stringify({ xpHistory })
+            body: JSON.stringify({
+                xpHistory,
+                shopItems: shopItemsData
+            })
         });
     } catch (error) {
-        console.error('Erro ao salvar XP:', error);
-    }
-};
-
-const updateShopItems = async () => {
-    try {
-        await fetch(`${API_URL}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json', 'X-ACCESS-KEY': API_KEY },
-            body: JSON.stringify({ shopItems: shopItemsData, xpHistory })
-        });
-    } catch (error) {
-        console.error('Erro ao salvar shop items:', error);
+        console.error('Erro ao salvar dados:', error);
     }
 };
 
@@ -181,7 +172,7 @@ const handleAddXp = async (e) => {
     }
 
     xpHistory.push({ amount, description, date: new Date().toISOString() });
-    await updateXpHistory();
+    await saveData();
     await updateUI();
     addXpForm.reset();
 };
@@ -212,7 +203,7 @@ const handleBuyItem = async (itemId) => {
 
     if (xpBalance >= item.cost) {
         xpHistory.push({ amount: -item.cost, description: `Bought: ${item.name}`, date: new Date().toISOString() });
-        await updateXpHistory();
+        await saveData();
         await updateUI();
     } else {
         alert("Not enough XP!");
@@ -223,7 +214,7 @@ const handleDeleteItem = async (itemId, category) => {
     if (!shopItemsData[category]) return;
     shopItemsData[category] = shopItemsData[category].filter(item => item.id !== itemId);
     if (shopItemsData[category].length === 0) delete shopItemsData[category];
-    await updateShopItems();
+    await saveData();
     await updateUI();
 };
 
@@ -241,7 +232,7 @@ const handleAddItem = async (e) => {
     if (!shopItemsData[category]) shopItemsData[category] = [];
 
     shopItemsData[category].push({ id: crypto.randomUUID(), name, cost });
-    await updateShopItems();
+    await saveData();
     await updateUI();
     addItemForm.reset();
 };
@@ -294,8 +285,8 @@ const importData = async (e) => {
             if (confirm('This will overwrite your current data. Are you sure?')) {
                 xpHistory = importedData.xpHistory;
                 shopItemsData = importedData.shopItems;
-                await updateXpHistory();
-                await updateShopItems();
+                await saveData();
+                await saveData();
                 await updateUI();
             }
         } else alert('Invalid data file. Must contain xpHistory and shopItems.');
