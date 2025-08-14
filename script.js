@@ -186,7 +186,7 @@ const handleAddXp = (e) => {
         date: new Date().toISOString()
     });
     
-    updateXpHistory();
+    await updateXpHistory();
     updateUI();
 
     addXpForm.reset();
@@ -224,7 +224,7 @@ const handleBuyItem = (itemId) => {
             description: `Bought: ${item.name}`,
             date: new Date().toISOString()
         });
-        updateXpHistory();
+        await updateXpHistory();
         updateUI();
     } else {
         alert("Not enough XP!");
@@ -241,7 +241,7 @@ const handleDeleteItem = (itemId, category) => {
         delete shopItemsData[category];
     }
 
-    updateXpHistory();
+    await updateXpHistory();
     updateUI();
 };
 
@@ -267,7 +267,7 @@ const handleAddItem = (e) => {
     };
 
     shopItemsData[category].push(newItem);
-    updateXpHistory();
+    await updateXpHistory();
     updateUI();
     addItemForm.reset();
 };
@@ -328,7 +328,7 @@ const importData = (e) => {
                 if (confirm('This will overwrite your current data. Are you sure?')) {
                     xpHistory = importedData.xpHistory;
                     shopItemsData = importedData.shopItems;
-                    updateXpHistory();
+                    await updateXpHistory();
                     updateUI();
                 }
             } else {
