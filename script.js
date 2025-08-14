@@ -165,7 +165,7 @@ const renderShop = async () => {
                     <span class="shop-item-cost">${item.cost} XP</span>
                 </div>
                 <div class="shop-item-actions">
-                     <button class="buy-btn" data-item-id="${item.id}" ${xpBalance < item.cost ? 'disabled' : ''}>Buy</button>
+                     <button class="buy-btn" data-item-id="${item.id}" data-category="${category}" ${xpBalance < item.cost ? 'disabled' : ''}>Buy</button>
                      <button class="delete-btn" data-item-id="${item.id}" data-category="${category}">Delete</button>
                 </div>
             `;
