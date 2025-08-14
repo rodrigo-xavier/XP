@@ -3,6 +3,8 @@ const API_URL = "https://api.jsonbin.io/v3/b/689cc622ae596e708fc94eda"
 const API_KEY = "$2a$10$zMkN5phpFeYKOMzUjhoJHeWQy6.z6cCuX/HZEUOOB7w9rh6lXZ4T2"
 const APP_KEY = "lolipop"
 
+const historyLength = 15
+
 const defaultShopItems = {
     "Hobby": [
         { id: 'h1', name: '10 min Meditando', cost: 0 },
@@ -91,6 +93,34 @@ const calculateXpValues = async () => {
 const renderXpValues = async () => {
     totalXpAcquiredEl.textContent = totalXpAcquired;
     totalXpBalanceEl.textContent = xpBalance;
+};
+
+const renderHistory = async () => {
+    historyList.innerHTML = '';
+    if (xpHistory.length === 0) {
+        historyList.innerHTML = '<li>No XP history yet. Go earn some!</li>';
+        return;
+    }
+
+    const recentHistory = xpHistory.slice(-historyLength).reverse();
+
+    recentHistory.forEach(entry => {
+        const li = document.createElement('li');
+        const type = entry.amount > 0 ? 'earn' : 'spend';
+        li.className = type;
+
+        const date = new Date(entry.date).toLocaleString();
+        li.innerHTML = `
+            <div class="history-details">
+                <span class="history-description">${entry.description}</span>
+                <span class="history-date">${date}</span>
+            </div>
+            <span class="history-amount ${type}">
+                ${entry.amount > 0 ? '+' : ''}${entry.amount} XP
+            </span>
+        `;
+        historyList.appendChild(li);
+    });
 };
 
 const renderShop = async () => {
