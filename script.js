@@ -129,9 +129,13 @@ const renderShop = async () => {
         const categoryDiv = document.createElement('div');
         categoryDiv.className = 'shop-category';
 
-        const categoryTitle = document.createElement('h4');
-        categoryTitle.textContent = category;
-        categoryDiv.appendChild(categoryTitle);
+        const categoryHeader = document.createElement('div');
+        categoryHeader.className = 'shop-category-header';
+        categoryHeader.innerHTML = `<h4>${category}</h4> <button class="toggle-category">Toggle</button>`;
+        categoryDiv.appendChild(categoryHeader);
+
+        const itemsContainer = document.createElement('div');
+        itemsContainer.className = 'shop-items-container';
 
         shopItemsData[category].forEach(item => {
             const itemDiv = document.createElement('div');
@@ -146,11 +150,22 @@ const renderShop = async () => {
                      <button class="delete-btn" data-item-id="${item.id}" data-category="${category}">Delete</button>
                 </div>
             `;
-            categoryDiv.appendChild(itemDiv);
+            itemsContainer.appendChild(itemDiv);
         });
+
+        categoryDiv.appendChild(itemsContainer);
         shopItemsContainer.appendChild(categoryDiv);
+
+        const toggleBtn = categoryHeader.querySelector('.toggle-category');
+        toggleBtn.addEventListener('click', () => {
+            itemsContainer.style.display = itemsContainer.style.display === 'none' ? 'block' : 'none';
+        });
+
+        // Inicialmente, você pode deixar as categorias recolhidas
+        itemsContainer.style.display = 'none';
     }
 };
+
 
 const updateUI = async () => {
     await calculateXpValues();
