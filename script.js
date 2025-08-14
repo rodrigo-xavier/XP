@@ -71,7 +71,7 @@ const loadData = async () => {
 };
 
 // Salvar XP na API
-const saveXpHistory = async () => {
+const updateXpHistory = async () => {
     try {
         await fetch(`${API_URL}`, {
             method: 'PUT',
@@ -186,7 +186,7 @@ const handleAddXp = (e) => {
         date: new Date().toISOString()
     });
     
-    saveXpHistory();
+    updateXpHistory();
     updateUI();
 
     addXpForm.reset();
@@ -224,7 +224,7 @@ const handleBuyItem = (itemId) => {
             description: `Bought: ${item.name}`,
             date: new Date().toISOString()
         });
-        saveXpHistory();
+        updateXpHistory();
         updateUI();
     } else {
         alert("Not enough XP!");
@@ -241,7 +241,7 @@ const handleDeleteItem = (itemId, category) => {
         delete shopItemsData[category];
     }
 
-    saveXpHistory();
+    updateXpHistory();
     updateUI();
 };
 
@@ -267,7 +267,7 @@ const handleAddItem = (e) => {
     };
 
     shopItemsData[category].push(newItem);
-    saveXpHistory();
+    updateXpHistory();
     updateUI();
     addItemForm.reset();
 };
@@ -328,7 +328,7 @@ const importData = (e) => {
                 if (confirm('This will overwrite your current data. Are you sure?')) {
                     xpHistory = importedData.xpHistory;
                     shopItemsData = importedData.shopItems;
-                    saveXpHistory();
+                    updateXpHistory();
                     updateUI();
                 }
             } else {
@@ -347,18 +347,18 @@ const importData = (e) => {
 
 // --- INITIALIZATION ---
 const init = () => {
-    loadData();
-    updateUI();
+    loadData().then(() => {
+        updateUI();
 
-    addXpForm.addEventListener('submit', handleAddXp);
-    shopItemsContainer.addEventListener('click', handleShopAction);
-    addItemForm.addEventListener('submit', handleAddItem);
-    exportDataBtn.addEventListener('click', exportData);
-    importDataBtn.addEventListener('click', () => importFileInput.click());
-    importFileInput.addEventListener('change', importData);
+        addXpForm.addEventListener('submit', handleAddXp);
+        shopItemsContainer.addEventListener('click', handleShopAction);
+        addItemForm.addEventListener('submit', handleAddItem);
+        exportDataBtn.addEventListener('click', exportData);
+        importDataBtn.addEventListener('click', () => importFileInput.click());
+        importFileInput.addEventListener('change', importData);
 
-    // Password protection
-    passwordForm.addEventListener('submit', handlePasswordSubmit);
+        passwordForm.addEventListener('submit', handlePasswordSubmit);
+    });
 };
 
 init();
