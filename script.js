@@ -61,8 +61,8 @@ const loadData = async () => {
 
         const data = await response.json();
 
-        xpHistory = data.xpHistory || [];
-        shopItemsData = data.shopItems || JSON.parse(JSON.stringify(defaultShopItems));
+        xpHistory = (data.record?.xpHistory) || [];
+        shopItemsData = (data.record?.shopItems) || JSON.parse(JSON.stringify(defaultShopItems));
     } catch (error) {
         console.error('Erro ao carregar dados:', error);
         shopItemsData = JSON.parse(JSON.stringify(defaultShopItems)); // fallback
