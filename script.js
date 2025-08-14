@@ -1,10 +1,7 @@
 // --- CONFIG & DATA ---
-const apiUrl = API_URL
-const apiKey = API_KEY
-const appKey = APP_KEY
-const apiUrl_test = import.meta.env["API_URL"];
-const apiKey_test = import.meta.env["API_KEY"];
-const appKey_test = import.meta.env["APP_KEY"];
+const API_URL = "https://api.jsonbin.io/v3/b/689cc622ae596e708fc94eda"
+const API_KEY = "$2a$10$zMkN5phpFeYKOMzUjhoJHeWQy6.z6cCuX/HZEUOOB7w9rh6lXZ4T2"
+const APP_KEY = "lolipop"
 
 const defaultShopItems = {
     "Hobby": [
@@ -54,10 +51,10 @@ const importFileInput = document.getElementById('import-file-input');
 // Carregar dados da API
 const loadData = async () => {
     try {
-        const response = await fetch(`${apiUrl}`, {
+        const response = await fetch(`${API_URL}`, {
             method: 'GET',
             headers: {
-                'X-ACCESS-KEY': apiKey
+                'X-ACCESS-KEY': API_KEY
             },
         });
 
@@ -76,11 +73,11 @@ const loadData = async () => {
 // Salvar XP na API
 const saveXpHistory = async () => {
     try {
-        await fetch(`${apiUrl}`, {
+        await fetch(`${API_URL}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'X-ACCESS-KEY': apiKey
+                'X-ACCESS-KEY': API_KEY
             },
             body: JSON.stringify({
                 xpHistory,
@@ -278,7 +275,7 @@ const handleAddItem = (e) => {
 // --- PASSWORD PROTECTION ---
 const handlePasswordSubmit = (e) => {
     e.preventDefault();
-    if (passwordInput.value === appKey) {
+    if (passwordInput.value === APP_KEY) {
         passwordOverlay.style.display = 'none';
         lockedContent.forEach(el => el.classList.remove('locked'));
     } else {
