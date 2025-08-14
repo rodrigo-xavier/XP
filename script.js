@@ -5,21 +5,20 @@ const APP_KEY = "lolipop"
 
 const defaultShopItems = {
     "Hobby": [
-        { id: 'h1', name: '10 minutes of Meditation', cost: 10 },
-        { id: 'h2', name: '10 minutes of Drawing', cost: 10 }
+        { id: 'h1', name: '10 min Meditando', cost: 0 },
+        { id: 'h2', name: '10 min Desenhando', cost: 2 }
     ],
     "Entertainment": [
-        { id: 'e1', name: 'Watch 1 episode of Anime', cost: 25 },
-        { id: 'e2', name: 'Go out to a bar', cost: 150 }
+        { id: 'e1', name: '1 Episódio de Anime', cost: 6 },
+        { id: 'e2', name: 'Barzinho', cost: 60 }
     ],
     "Travel": [
-        { id: 't1', name: 'Travel to the beach', cost: 300 },
-        { id: 't2', name: 'Travel to another city', cost: 1000 }
+        { id: 't1', name: 'Praia', cost: 2500 },
     ],
     "Food": [
-        { id: 'f1', name: 'Monster Energy Drink', cost: 20 },
-        { id: 'f2', name: 'Beer', cost: 30 },
-        { id: 'f3', name: 'Buy food from iFood', cost: 50 }
+        { id: 'f1', name: 'Monster', cost: 8 },
+        { id: 'f2', name: 'Cerveja', cost: 8 },
+        { id: 'f3', name: 'iFood', cost: 50 }
     ]
 };
 
@@ -212,7 +211,13 @@ const handleBuyItem = async (itemId) => {
 
 const handleDeleteItem = async (itemId, category) => {
     if (!shopItemsData[category]) return;
-    shopItemsData[category] = shopItemsData[category].filter(item => item.id !== itemId);
+
+    const item = shopItemsData[category].find(i => i.id === itemId);
+    if (!item) return;
+    const confirmed = window.confirm(`Confirme deleção de "${item.name}" da categoria "${category}"?`);
+    if (!confirmed) return;
+
+    shopItemsData[category] = shopItemsData[category].filter(i => i.id !== itemId);
     if (shopItemsData[category].length === 0) delete shopItemsData[category];
     await saveData();
     await updateUI();
