@@ -187,14 +187,16 @@ const handleAddXp = async (e) => {
 };
 
 const handleShopAction = async (e) => {
-    const target = e.target;
-    const itemId = target.dataset.itemId;
-    if (!itemId) return;
+    const button = e.target.closest('button');
+    if (!button) return;
 
-    if (target.classList.contains('buy-btn')) {
+    const itemId = button.dataset.itemId;
+    const category = button.dataset.category;
+    if (!itemId || !category) return;
+
+    if (button.classList.contains('buy-btn')) {
         await handleBuyItem(itemId);
-    } else if (target.classList.contains('delete-btn')) {
-        const category = target.dataset.category;
+    } else if (button.classList.contains('delete-btn')) {
         await handleDeleteItem(itemId, category);
     }
 };
