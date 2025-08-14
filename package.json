@@ -2,7 +2,7 @@
   "name": "xp",
   "version": "1.0.0",
   "description": "",
-  "main": "./dist/script.js",
+  "main": "./public/script.js",
   "scripts": {},
   "keywords": [],
   "author": "",

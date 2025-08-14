@@ -23,12 +23,12 @@ jobs:
 
       - name: Use secret
         run: |
-          echo "const API_URL = '${{ secrets.API_URL }}';" > ./config.js
-          echo "const API_KEY = '${{ secrets.API_KEY }}';" >> ./config.js
-          echo "const APP_KEY = '${{ secrets.APP_KEY }}';" >> ./config.js
+          echo "const API_URL = '${{ secrets.API_URL }}';" > ./public/config.js
+          echo "const API_KEY = '${{ secrets.API_KEY }}';" >> ./public/config.js
+          echo "const APP_KEY = '${{ secrets.APP_KEY }}';" >> ./public/config.js
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .  # diretório onde estão index.html, style.css, script.js
+          publish_dir: ./public  # diretório onde estão index.html, style.css, script.js
