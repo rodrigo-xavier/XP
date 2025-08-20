@@ -111,6 +111,7 @@ const renderHistory = async () => {
 
         const date = new Date(entry.date).toLocaleString();
         li.innerHTML = `
+            <button class="delete-btn" data-index="${xpHistory.length - 1 - index}">&times;</button>
             <div class="history-details">
                 <span class="history-description">${entry.description}</span>
                 <span class="history-date">${date}</span>
@@ -118,7 +119,6 @@ const renderHistory = async () => {
             <span class="history-amount ${type}">
                 ${entry.amount > 0 ? '+' : ''}${entry.amount} XP
             </span>
-            <button class="delete-btn" data-index="${xpHistory.length - 1 - index}">Delete</button>
         `;
         historyList.appendChild(li);
     });
@@ -175,6 +175,7 @@ const renderShop = async () => {
             const itemDiv = document.createElement('div');
             itemDiv.className = 'shop-item';
             itemDiv.innerHTML = `
+                <button class="delete-btn" data-item-id="${item.id}" data-category="${category}">&times;</button>
                 <div class="shop-item-info">
                     <span class="shop-item-name">${item.name}</span>
                     <span class="shop-item-cost">${item.cost} XP</span>
@@ -182,7 +183,6 @@ const renderShop = async () => {
                 <div class="shop-item-actions">
                     <button class="buy-btn" data-item-id="${item.id}" data-category="${category}" ${xpBalance < item.cost ? 'disabled' : ''}>Buy</button>
                     <button class="edit-btn" data-item-id="${item.id}" data-category="${category}">Edit</button>
-                    <button class="delete-btn" data-item-id="${item.id}" data-category="${category}">Delete</button>
                 </div>
             `;
             itemsContainer.appendChild(itemDiv);

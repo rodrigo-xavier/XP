@@ -215,21 +215,28 @@ button:disabled, .buy-btn:disabled {
     align-items: center;
 }
 
+.shop-item, #history-list li {
+    position: relative;
+}
+
 /* Botão DELETE */
 .delete-btn {
-    background-color: var(--xp-spend-color);
-    color: var(--text-color);
-    padding: 0.3rem 0.6rem;
-    font-size: 0.65rem;
-    font-weight: 700;
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    background: transparent;
+    border: none;
+    color: var(--xp-spend-color);
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0;
     line-height: 1;
-    height: fit-content;
-    border-radius: 4px;
 }
 
 .delete-btn:hover {
-    filter: brightness(1.2);
-    background-color: var(--xp-spend-color); /* override */
+    color: red;
+    transform: scale(1.2);
 }
 
 /* Botão EDIT */
