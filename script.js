@@ -104,7 +104,7 @@ const renderHistory = async () => {
 
     const recentHistory = xpHistory.slice(-historyLength).reverse();
 
-    recentHistory.forEach(entry => {
+    recentHistory.forEach((entry, index) => {
         const li = document.createElement('li');
         const type = entry.amount > 0 ? 'earn' : 'spend';
         li.className = type;
@@ -118,8 +118,21 @@ const renderHistory = async () => {
             <span class="history-amount ${type}">
                 ${entry.amount > 0 ? '+' : ''}${entry.amount} XP
             </span>
+            <button class="history-delete-btn" data-index="${xpHistory.length - 1 - index}">Delete</button>
         `;
         historyList.appendChild(li);
+    });
+
+    // Adicionar listener para deletar
+    document.querySelectorAll('.history-delete-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            const idx = parseInt(e.target.dataset.index);
+            const confirmed = confirm(`Remove XP entry: "${xpHistory[idx].description}"?`);
+            if (!confirmed) return;
+            xpHistory.splice(idx, 1);
+            await saveData();
+            await updateUI();
+        });
     });
 };
 
@@ -165,12 +178,14 @@ const renderShop = async () => {
                     <span class="shop-item-cost">${item.cost} XP</span>
                 </div>
                 <div class="shop-item-actions">
-                     <button class="buy-btn" data-item-id="${item.id}" data-category="${category}" ${xpBalance < item.cost ? 'disabled' : ''}>Buy</button>
-                     <button class="delete-btn" data-item-id="${item.id}" data-category="${category}">Delete</button>
+                    <button class="buy-btn" data-item-id="${item.id}" data-category="${category}" ${xpBalance < item.cost ? 'disabled' : ''}>Buy</button>
+                    <button class="edit-btn" data-item-id="${item.id}" data-category="${category}">Edit</button>
+                    <button class="delete-btn" data-item-id="${item.id}" data-category="${category}">Delete</button>
                 </div>
             `;
             itemsContainer.appendChild(itemDiv);
         });
+
 
         categoryDiv.appendChild(itemsContainer);
         shopItemsContainer.appendChild(categoryDiv);
@@ -221,7 +236,10 @@ const handleShopAction = async (e) => {
 
     if (button.classList.contains('buy-btn')) {
         await handleBuyItem(itemId);
-    } else if (button.classList.contains('delete-btn')) {
+    } else if (button.classList.contains('edit-btn')) {
+        await handleEditItem(itemId, category);
+    }
+    else if (button.classList.contains('delete-btn')) {
         await handleDeleteItem(itemId, category);
     }
 };
@@ -243,6 +261,29 @@ const handleBuyItem = async (itemId) => {
         alert("Not enough XP!");
     }
 };
+
+const handleEditItem = async (itemId, category) => {
+    const item = shopItemsData[category].find(i => i.id === itemId);
+    if (!item) return;
+
+    const newName = prompt('Edit item name:', item.name);
+    if (newName === null) return; // cancelou
+
+    const newCostStr = prompt('Edit item cost:', item.cost);
+    if (newCostStr === null) return;
+
+    const newCost = parseInt(newCostStr);
+    if (isNaN(newCost) || newCost <= 0) {
+        alert('Invalid cost!');
+        return;
+    }
+
+    item.name = newName.trim();
+    item.cost = newCost;
+    await saveData();
+    await updateUI();
+};
+
 
 const handleDeleteItem = async (itemId, category) => {
     if (!shopItemsData[category]) return;
