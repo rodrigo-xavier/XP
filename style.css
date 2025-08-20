@@ -217,21 +217,25 @@ button:disabled, .buy-btn:disabled {
 
 .shop-item, #history-list li {
     position: relative;
+    padding-top: 2rem;   /* espaço extra no topo */
+    padding-right: 2rem; /* espaço extra na direita */
+    box-sizing: border-box;
 }
 
 /* Botão DELETE */
 .delete-btn {
     position: absolute;
-    top: 4px;
-    right: 6px;
+    top: 6px;
+    right: 8px;
     background: transparent;
     border: none;
     color: var(--xp-spend-color);
-    font-size: 2rem;   /* DOBRO do tamanho (antes 1rem) */
+    font-size: 2rem;   /* já dobrado */
     font-weight: bold;
     cursor: pointer;
-    padding: 0.2rem;   /* área de clique maior */
+    padding: 0.2rem;
     line-height: 1;
+    z-index: 2; /* garante que fique acima, mas sem encobrir texto */
 }
 
 .delete-btn:hover {
