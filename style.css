@@ -216,13 +216,6 @@ button:disabled, .buy-btn:disabled {
     align-items: center;
 }
 
-.shop-item, #history-list li {
-    position: relative;
-    padding-top: 2rem;   /* espaço extra no topo */
-    padding-right: 2rem; /* espaço extra na direita */
-    box-sizing: border-box;
-}
-
 /* Botão DELETE */
 .delete-btn {
     position: absolute;
@@ -242,7 +235,7 @@ button:disabled, .buy-btn:disabled {
 .delete-btn:hover {
     color: red;
     transform: scale(1.2);
-    background-color: var(--bg-color);
+    background-color: var(--surface-color);
     filter: brightness(1.1);
 }
 
@@ -264,7 +257,7 @@ button:disabled, .buy-btn:disabled {
 
 .edit-btn:hover {
     filter: brightness(1.2);
-    background-color: var(--bg-color);
+    background-color: var(--surface-color);
 }
 
 #history-list {
@@ -292,6 +285,13 @@ button:disabled, .buy-btn:disabled {
 
 #history-list .spend {
     border-left-color: var(--xp-spend-color);
+}
+
+.shop-item, #history-list li {
+    position: relative;
+    padding-top: 2rem;   /* espaço extra no topo */
+    padding-right: 2rem; /* espaço extra na direita */
+    box-sizing: border-box;
 }
 
 .history-details {
