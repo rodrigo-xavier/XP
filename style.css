@@ -3,6 +3,7 @@
     --surface-color: #1e1e1e;
     --primary-color: #bb86fc;
     --secondary-color: #03dac6;
+    --tertiary-color: #ffb74d;
     --text-color: #e0e0e0;
     --border-color: #333;
     --xp-earn-color: #4caf50;
@@ -233,7 +234,7 @@ button:disabled, .buy-btn:disabled {
     font-size: 2rem;   /* já dobrado */
     font-weight: bold;
     cursor: pointer;
-    padding: 0.2rem;
+    padding: 0rem;
     line-height: 1;
     z-index: 2; /* garante que fique acima, mas sem encobrir texto */
 }
@@ -241,23 +242,29 @@ button:disabled, .buy-btn:disabled {
 .delete-btn:hover {
     color: red;
     transform: scale(1.2);
+    background-color: var(--bg-color);
+    filter: brightness(1.1);
 }
 
 /* Botão EDIT */
 .edit-btn {
-    background-color: #3498db;   /* azul para diferenciar */
-    color: #fff;
-    padding: 0.3rem 0.6rem;
-    font-size: 0.65rem;
-    font-weight: 700;
-    line-height: 1;
-    height: fit-content;
+    background-color: var(--tertiary-color);
+    color: #000;
+    border: none;
+    padding: 0.4rem 0.8rem;   /* menor que antes */
     border-radius: 4px;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.7rem;        /* menor que antes */
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s, filter 0.2s;
+    text-transform: uppercase;
+    line-height: 1;
 }
 
 .edit-btn:hover {
     filter: brightness(1.2);
-    background-color: #2980b9;
+    background-color: var(--bg-color);
 }
 
 #history-list {
