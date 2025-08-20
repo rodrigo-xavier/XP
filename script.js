@@ -118,21 +118,23 @@ const renderHistory = async () => {
             <span class="history-amount ${type}">
                 ${entry.amount > 0 ? '+' : ''}${entry.amount} XP
             </span>
-            <button class="history-delete-btn" data-index="${xpHistory.length - 1 - index}">Delete</button>
+            <button class="delete-btn" data-index="${xpHistory.length - 1 - index}">Delete</button>
         `;
         historyList.appendChild(li);
     });
 
     // Adicionar listener para deletar
-    document.querySelectorAll('.history-delete-btn').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-            const idx = parseInt(e.target.dataset.index);
-            const confirmed = confirm(`Remove XP entry: "${xpHistory[idx].description}"?`);
-            if (!confirmed) return;
-            xpHistory.splice(idx, 1);
-            await saveData();
-            await updateUI();
-        });
+    historyList.addEventListener('click', async (e) => {
+        const btn = e.target.closest('.delete-btn');
+        if (!btn) return;
+
+        const idx = parseInt(btn.dataset.index);
+        const confirmed = confirm(`Confirme deleção do registro: "${xpHistory[idx].description}"?`);
+        if (!confirmed) return;
+
+        xpHistory.splice(idx, 1);
+        await saveData();
+        await updateUI();
     });
 };
 
